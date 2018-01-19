@@ -1,0 +1,26 @@
+version: '2.3'
+
+networks:
+  web:
+    external: true
+
+services:
+  web:
+    build: build
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./redis:/var/redis/data
+      - ./www:/www
+    labels:
+      - "traefik.backend=laravel"
+      - "traefik.docker.network=web"
+      - "traefik.frontend.rule=Host:demodns.sibdata.ru"
+      - "traefik.enable=true"
+      - "traefik.port=80"
+    networks:
+      - web
+    expose:
+      - "80"
+    ports:
+      - "2222:22"
