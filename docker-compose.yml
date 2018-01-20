@@ -3,13 +3,14 @@ version: '2.3'
 networks:
   web:
     external: true
+  back:
+    driver: bridge
 
 services:
   web:
-    build: build
+    image: blackojack/laravel
     restart: always
     volumes:
-      - ./mysql:/var/lib/mysql
       - ./redis:/var/redis/data
       - ./www:/www
     labels:
@@ -18,9 +19,26 @@ services:
       - "traefik.frontend.rule=Host:demodns.sibdata.ru"
       - "traefik.enable=true"
       - "traefik.port=80"
+    env_file:
+      - system.env
     networks:
+      - back
       - web
     expose:
       - "80"
     ports:
       - "2222:22"
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    env_file:
+      - system.env
+      - mysql.env
+    networks:
+      - back:
+        aliases:
+          - db
+    expose:
+      - "3306"

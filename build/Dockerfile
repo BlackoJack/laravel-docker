@@ -18,10 +18,6 @@ ENV PHP_DISPLAY_ERRORS="Off"
 ENV PHP_DISPLAY_STARTUP_ERRORS="On"
 ENV PHP_ERROR_REPORTING="E_COMPILE_ERROR\|E_RECOVERABLE_ERROR\|E_ERROR\|E_CORE_ERROR"
 ENV PHP_CGI_FIX_PATHINFO=0
-ENV MYSQL_ROOT_PWD="sibdata2018"
-ENV MYSQL_USER="developer"
-ENV MYSQL_USER_PWD="developer2018"
-ENV MYSQL_USER_DB="laravel"
 ENV USER="developer"
 ENV GROUP="developer"
 ENV USER_PASSWORD="developer2018"
@@ -30,7 +26,6 @@ COPY root /
 
 RUN /var/scripts/install.sh
 
-VOLUME ["/var/lib/mysql"]
 VOLUME ["/var/redis/data"]
 VOLUME ["/www"]
 

@@ -4,7 +4,7 @@ apk --update --no-cache add openssl tzdata nginx py-simplejson gd tiff libpng gh
 php7 php7-cli php7-fpm php7-mysqli php7-pdo_mysql php7-mcrypt php7-curl php7-opcache php7-pdo \
 php7-soap php7-gd php7-gmp php7-json php7-xml php7-dom php7-xmlreader php7-zlib php7-zip \
 php7-phar php7-ctype php7-openssl php7-iconv php7-mbstring php7-tokenizer php7-xmlwriter php7-session \
-git supervisor bash nano wget curl htop mc sudo redis mysql mysql-client openssh openssh-sftp-server lynx bash-completion git-bash-completion
+git supervisor bash nano wget curl htop mc sudo redis mysql-client openssh openssh-sftp-server lynx bash-completion git-bash-completion
 
 curl -sS https://getcomposer.org/installer | \
 php -- --install-dir=/usr/bin --filename=composer
@@ -42,13 +42,9 @@ mkdir /logs
 touch /logs/error.log
 touch /logs/nginx.log
 touch /logs/nginx-site.log
-touch /logs/mysql-stdout.log
-touch /logs/musql-stderr.log
 ln -sf /dev/stdout /logs/error.log
 ln -sf /dev/stdout /logs/nginx.log
 ln -sf /dev/stdout /logs/nginx-site.log
-ln -sf /dev/stdout /logs/mysql-stdout.log
-ln -sf /dev/stdout /logs/mysql-stderr.log
 
 mkdir /run/nginx/
 mkdir -p /var/run/php-fpm
