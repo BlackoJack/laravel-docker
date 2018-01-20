@@ -1,6 +1,7 @@
 #!/bin/sh
 
 
+
 sed -i "s|display_errors\s*=\s*Off|display_errors = ${PHP_DISPLAY_ERRORS}|i" /etc/php7/php.ini \
 && sed -i "s|display_startup_errors\s*=\s*Off|display_startup_errors = ${PHP_DISPLAY_STARTUP_ERRORS}|i" /etc/php7/php.ini \
 && sed -i "s|error_reporting\s*=\s*E_ALL & ~E_DEPRECATED & ~E_STRICT|error_reporting = ${PHP_ERROR_REPORTING}|i" /etc/php7/php.ini \
@@ -31,18 +32,6 @@ chmod 777 /www
 adduser -D -h /www -s /bin/bash ${USER}
 chown -R ${USER}:${GROUP} /www
 chown -R ${USER}:${GROUP} /var/lib/nginx
-su - ${USER} -c "composer global require 'laravel/installer'"
-su - ${USER} -c "mkdir ~/.ssh"
-
-
-su - ${USER} -c "mkdir ~/pma  && \
-cd ~/pma && \
-wget https://files.phpmyadmin.net/phpMyAdmin/4.7.7/phpMyAdmin-4.7.7-all-languages.tar.gz && \
-tar -xzf phpMyAdmin-4.7.7-all-languages.tar.gz -C ~/pma --strip 1 && \
-rm -f phpMyAdmin-4.7.7-all-languages.tar.gz && \
-cp config.sample.inc.php config.inc.php"
-
-sed -i "s|\$cfg\['blowfish_secret'\] = '';*|\$cfg\['blowfish_secret'\] = '23452857238rg8gblyug123pcbf5o912v65o871}P}:cf57109823b2f50';|i" /www/pma/config.inc.php
 
 sed -i "s|export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin|export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$HOME/.composer/vendor/bin|i" /etc/profile
 
@@ -53,10 +42,27 @@ echo "${USER}:${USER_PASSWORD}"|chpasswd
 procs=$(cat /proc/cpuinfo |grep processor | wc -l)
 sed -i -e "s|worker_processes 1|worker_processes $procs|" /etc/nginx/nginx.conf
 
-
-mkdir -p /var/redis/data
-chown -R redis:redis /var/redis/data
 echo -e "include /etc/redis-local.conf\n" >> /etc/redis.conf
+
+if [ ! -f /www/installed.txt ]
+then
+su - ${USER} -c "composer global require 'laravel/installer'"
+su - ${USER} -c "mkdir ~/.ssh"
+su - ${USER} -c "mkdir ~/pma  && \
+cd ~/pma && \
+wget https://files.phpmyadmin.net/phpMyAdmin/4.7.7/phpMyAdmin-4.7.7-all-languages.tar.gz && \
+tar -xzf phpMyAdmin-4.7.7-all-languages.tar.gz -C ~/pma --strip 1 && \
+rm -f phpMyAdmin-4.7.7-all-languages.tar.gz && \
+cp config.sample.inc.php config.inc.php"
+
+sed -i "s|\$cfg\['blowfish_secret'\] = '';*|\$cfg\['blowfish_secret'\] = '23452857238rg8gblyug123pcbf5o912v65o871}P}:cf57109823b2f50';|i" /www/pma/config.inc.php
+mkdir -p /var/redis/data
+
+else
+echo "Alredy exist"
+fi
+
+chown -R redis:redis /var/redis/data
 
 echo '[i] start running services'
 
