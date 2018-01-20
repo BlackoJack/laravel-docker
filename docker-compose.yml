@@ -8,7 +8,7 @@ networks:
 
 services:
   web:
-    image: blackojack/laravel
+    image: blackojack/laravel-docker
     restart: always
     volumes:
       - ./redis:/var/redis/data
@@ -37,7 +37,7 @@ services:
       - system.env
       - mysql.env
     networks:
-      - back:
+      back:
         aliases:
           - db
     expose:
