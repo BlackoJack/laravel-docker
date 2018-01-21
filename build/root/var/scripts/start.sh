@@ -29,6 +29,16 @@ echo "${TZ}" > /etc/timezone
 chmod -R 664 /www
 chmod 777 /www
 
+procs=$(cat /proc/cpuinfo |grep processor | wc -l)
+sed -i -e "s|worker_processes 1|worker_processes $procs|" /etc/nginx/nginx.conf
+
+echo -e "include /etc/redis-local.conf\n" >> /etc/redis.conf
+
+if [ ! -d /www ]
+then
+mkdir /www
+fi
+
 adduser -D -h /www -s /bin/bash ${USER}
 chown -R ${USER}:${GROUP} /www
 chown -R ${USER}:${GROUP} /var/lib/nginx
@@ -38,11 +48,6 @@ sed -i "s|export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 echo "${USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 echo "${USER}:${USER_PASSWORD}"|chpasswd
-
-procs=$(cat /proc/cpuinfo |grep processor | wc -l)
-sed -i -e "s|worker_processes 1|worker_processes $procs|" /etc/nginx/nginx.conf
-
-echo -e "include /etc/redis-local.conf\n" >> /etc/redis.conf
 
 if [ ! -f /www/installed.txt ]
 then
